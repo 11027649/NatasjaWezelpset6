@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "96103790314",
+    "firebase_url": "https://natasjawezelpset6.firebaseio.com",
+    "project_id": "natasjawezelpset6",
+    "storage_bucket": "natasjawezelpset6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96103790314:android:4bc5f6a1390387d2",
+        "android_client_info": {
+          "package_name": "e.natasja.natasjawezel__pset6"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96103790314-nitgu2j2k1hlravsr9lk70e6j4onspgs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "e.natasja.natasjawezel__pset6",
+            "certificate_hash": "e5114361da34e9d6a0dc81952ab3b1d4d9b135d1"
+          }
+        },
+        {
+          "client_id": "96103790314-m0dgjh568eq7ohmc3hag55acq410tbrv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ9R5-NkaMY-pwPLJfF9fnQK2QXzmiT4w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96103790314-m0dgjh568eq7ohmc3hag55acq410tbrv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
