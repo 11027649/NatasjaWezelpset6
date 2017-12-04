@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="e.natasja.natasjawezel__pset6.MainActivity">
+    tools:context="e.natasja.natasjawezel__pset6.MainActivity"
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="In this app you have to answer quiz questions to win from your opponents!" />
+
+    <Button
+        android:id="@+id/intent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to questions!"
+        android:onClick="startQuiz"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="55dp" />
+</LinearLayout>

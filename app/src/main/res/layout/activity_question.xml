@@ -12,37 +12,55 @@
         android:id="@+id/question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="The question is...."
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
         tools:layout_editor_absoluteX="194dp"
         tools:layout_editor_absoluteY="37dp" />
 
-    <RadioButton
-        android:id="@+id/radioButton"
+    <ProgressBar
+        android:id="@+id/timeBar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="RadioButton"
-        android:textAlignment="viewStart"
-        tools:text="A" />
+        android:layout_height="wrap_content" />
 
-    <RadioButton
-        android:id="@+id/radioButton2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="B" />
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <RadioButton
-        android:id="@+id/radioButton3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="C" />
+        <RadioButton
+            android:id="@+id/A"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="A"
+            android:textAlignment="viewStart" />
 
-    <RadioButton
-        android:id="@+id/radioButton4"
+        <RadioButton
+            android:id="@+id/B"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="B" />
+
+        <RadioButton
+            android:id="@+id/C"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="C" />
+
+        <RadioButton
+            android:id="@+id/D"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="D" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/nextQuestion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="RadioButton"
-        tools:text="D" />
+        android:onClick="nextQuestion"
+        android:text="I'm sure about this answer. Go to the next question!" />
+
 </LinearLayout>
