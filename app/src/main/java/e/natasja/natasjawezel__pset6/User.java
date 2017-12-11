@@ -7,14 +7,12 @@ package e.natasja.natasjawezel__pset6;
 public class User {
     public String username;
     public Integer solved;
-    public Float time_to_solve;
 
     // default constructor is important for firebase
     public User() {}
 
-    public User(String username, Integer solved, Float time_to_solve) {
+    public User(String username, Integer solved) {
         this.username = username;
         this.solved = solved;
-        this.time_to_solve = time_to_solve;
     }
 }

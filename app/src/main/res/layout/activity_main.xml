@@ -8,13 +8,23 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="In this app you have to answer quiz questions to win from your opponents!" />
+        android:text="You are logged in as: "
+        android:textAlignment="textEnd"
+        android:textColor="@color/colorAccent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="In this app you have to answer quiz questions as fast as possible to win from your opponents!"
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/intent"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Go to questions!"
         android:onClick="startQuiz"
