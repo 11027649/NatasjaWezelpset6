@@ -29,6 +29,41 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+
+        // inflate the menu resource xml file
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Couple actions to the options in the menu.
+     */
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logOut:
+                FirebaseAuth.getInstance().signOut();
+                Intent logout = new Intent(this, LoginActivity.class);
+                startActivity(logout);
+                finish();
+                break;
+
+            case R.id.scoreboard:
+                Intent toScoreboard = new Intent(this, ScoreboardActivity.class);
+                startActivity(toScoreboard);
+                finish();
+                break;
+
+            case R.id.mainMenu:
+                Toast.makeText(this, "You're already at the main menu!", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -119,43 +154,4 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    /**
-     * Create the menu with options.
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-
-        // inflate the menu resource xml file
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Couple actions to the options in the menu.
-     */
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logOut:
-                FirebaseAuth.getInstance().signOut();
-                Intent logout = new Intent(this, LoginActivity.class);
-                startActivity(logout);
-                finish();
-                break;
-
-            case R.id.scoreboard:
-                Intent toScoreboard = new Intent(this, ScoreboardActivity.class);
-                startActivity(toScoreboard);
-                finish();
-                break;
-
-            case R.id.mainMenu:
-                Intent toMainMenu = new Intent(this, MainActivity.class);
-                startActivity(toMainMenu);
-                finish();
-                break;
-        }
-
-        return true;
-    }
 }

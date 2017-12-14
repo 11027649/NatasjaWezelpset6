@@ -21,13 +21,13 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "LoginActivity";
-    FirebaseUser user;
 
     Button signInButton;
     EditText emailEditText, passwordEditText, verifyPasswordEditText;
     TextView registerButton;
     String email, password, verifyPassword;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // listen for user logins, like in the explanation video
         mAuthListener = new FirebaseAuth.AuthStateListener() {
+
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();

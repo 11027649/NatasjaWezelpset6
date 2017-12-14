@@ -31,8 +31,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class QuestionActivity extends AppCompatActivity {
-    RequestQueue queue;
-
     private static final String TAG = "QuestionActivity";
 
     ArrayList<Question> questionsArray;
@@ -47,7 +45,6 @@ public class QuestionActivity extends AppCompatActivity {
     boolean answered;
 
     FirebaseUser user;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +100,7 @@ public class QuestionActivity extends AppCompatActivity {
      */
     public void request() {
         // Instantiate the RequestQueue.
-        queue = Volley.newRequestQueue(this);
+        RequestQueue queue = Volley.newRequestQueue(this);
 
         // use a trivia api to get questions: it's not secured so you only need the url
         String url = "https://opentdb.com/api.php?amount=10&category=17&difficulty=medium&type=multiple";
@@ -271,7 +268,7 @@ public class QuestionActivity extends AppCompatActivity {
             if (button.getText().toString() == correctAnswerButton) {
                 Toast.makeText(this, "You've answered right!", Toast.LENGTH_SHORT).show();
                 right_answers += 1;
-            } else {
+            } else if (button.getText().toString() != correctAnswerButton) {
                 Toast.makeText(this, "This answer was wrong...", Toast.LENGTH_SHORT).show();
 
             }
@@ -282,12 +279,14 @@ public class QuestionActivity extends AppCompatActivity {
      * A question class to construct the data source for the questions.
      */
     public class Question {
+        // properties of the class
         String question;
         String correctAnswer;
         String answer1;
         String answer2;
         String answer3;
 
+        // constructor of the class
         public Question(String aQuestion, String aCorrectAnswer, String anAnswer1, String anAnswer2, String anAnswer3) {
             this.question = aQuestion;
             this.correctAnswer = aCorrectAnswer;

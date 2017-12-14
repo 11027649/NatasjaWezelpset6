@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 public class ScoreboardActivity extends AppCompatActivity {
     final static String TAG = "ScoreboardActivity";
@@ -47,6 +46,74 @@ public class ScoreboardActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Couple actions to the menu items.
+     * @param item
+     * @return true
+     */
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logOut:
+                FirebaseAuth.getInstance().signOut();
+                Intent logout = new Intent(this, LoginActivity.class);
+                startActivity(logout);
+                finish();
+                break;
+
+            case R.id.scoreboard:
+                Toast.makeText(this, "You're already at the scoreboard!", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.mainMenu:
+                Intent toMainMenu = new Intent(this, MainActivity.class);
+                startActivity(toMainMenu);
+                finish();
+                break;
+        }
+
+        return true;
+    }
+
+    /**
+     * Make sure users that aren't logged in can't reach this page.
+     */
+    public void listenToAuthState() {
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        // check if user is really logged in
+        FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // user is signed in
+                    Log.d(TAG, "onAuthStateChanged;signed_in" + user.getUid());
+
+                } else {
+                    // user is signed out
+                    Log.d(TAG, "onAuthStateChanged;signed_out");
+                    Intent goToLogin = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(goToLogin);
+                    finish();
+                }
+
+            }
+        };
+
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    /**
+     * Populate the scoreboard listview with users with highest highscore.
+     */
     public void populateScoreList() {
         // find firebase reference
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -105,77 +172,21 @@ public class ScoreboardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Creates user highscore objects to put in the scoreboard listview.
+     */
     public class UserHighscore {
+        // properties of the class
         public String number;
         public String username;
         public String highscore;
 
+        // constructor of the class
         public UserHighscore(String aNumber, String anUsername, String aHighscore) {
             this.username = anUsername;
             this.highscore = aHighscore;
             this.number = aNumber;
         }
     }
-
-    public void listenToAuthState() {
-
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-        // check if user is really logged in
-        FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // user is signed in
-                    Log.d(TAG, "onAuthStateChanged;signed_in" + user.getUid());
-
-                } else {
-                    // user is signed out
-                    Log.d(TAG, "onAuthStateChanged;signed_out");
-                    Intent goToLogin = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(goToLogin);
-                    finish();
-                }
-
-            }
-        };
-
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logOut:
-                FirebaseAuth.getInstance().signOut();
-                Intent logout = new Intent(this, LoginActivity.class);
-                startActivity(logout);
-                finish();
-                break;
-
-            case R.id.scoreboard:
-                Intent toScoreboard = new Intent(this, ScoreboardActivity.class);
-                startActivity(toScoreboard);
-                finish();
-                break;
-
-            case R.id.mainMenu:
-                Intent toMainMenu = new Intent(this, MainActivity.class);
-                startActivity(toMainMenu);
-                finish();
-                break;
-        }
-
-        return true;
-    }
-
-
 
 }
