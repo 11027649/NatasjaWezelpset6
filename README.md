@@ -21,7 +21,7 @@ The questions you'll have to answer look like this.
 
 <img src="docs/questions.jpeg" width="50%" height="50%"/>
 
-And the scoreboard look like this (except if you obtain a higher score :-)
+And the scoreboard look like this (except if you obtain a higher score :-))
 
 <img src="docs/scoreboard.jpeg" width="50%" height="50%"/>
 
