@@ -8,6 +8,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/mainMenu"
+        android:title="Go to main menu!"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/logOut"
         android:title="Log Out"
         app:showAsAction="never" />

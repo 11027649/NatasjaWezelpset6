@@ -5,6 +5,8 @@ package e.natasja.natasjawezel__pset6;
  */
 
 public class User {
+    // this is a class for users that register to this app
+    // they will be added to firebase in this format
     public String username;
     public Integer solved;
 

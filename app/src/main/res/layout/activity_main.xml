@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="In this app you have to answer quiz questions as fast as possible to win from your opponents!"
+        android:text="In this app you have to give a correct answer to as many quiz questions as possible, to win from your opponents! Be careful! If you've already played once, and try again, you can obtain a lower score!"
         android:textAlignment="center"
         android:textSize="18sp" />
 

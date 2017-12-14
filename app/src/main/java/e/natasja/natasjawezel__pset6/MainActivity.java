@@ -33,14 +33,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // control if user is really logged in
-        mAuth = FirebaseAuth.getInstance();
-        setListener();
+        // control if the user is really logged in
+        setAuthListener();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
-    public void setListener() {
+    /**
+     * Set auth state listener to make sure a user that is not logged in, can't reach this activity.
+     */
+    public void setAuthListener() {
+        // get instance of the auth firebase
+        mAuth = FirebaseAuth.getInstance();
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
@@ -64,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 addToDb();
                                 Toast.makeText(getApplicationContext(), "Welcome to this application!", Toast.LENGTH_SHORT).show();
+
+                                String username = user.getEmail().split("@")[0];
+                                TextView welcome = findViewById(R.id.welcome);
+                                welcome.setText("You are logged in as: " + username);
                             }
                         }
                         @Override
@@ -73,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                 } else {
-                    // user is signed out
+                    // user is signed out, go to login activity
                     Log.d(TAG, "onAuthStateChanged;signed_out");
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
@@ -82,42 +91,67 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mAuth.addAuthStateListener(mAuthListener);
-        Log.d(TAG, "I'm listening for signed in users.");
-
     }
 
+    /**
+     *  Add user with a solved amount of 0 to the database.
+     */
     public void addToDb() {
+
+        // auto generate a username
         String username = user.getEmail().split("@")[0];
         Log.d(TAG, username);
 
-        // add user to db
+        // make a new user and find user id
         User aUser = new User(username, 0);
         String userId = user.getUid();
 
+        // add user to database
         mDatabase.child("users").child(userId).setValue(aUser);
-
-
     }
 
+    /**
+     * If the quiz is started, go to the questions activity.
+     */
     public void startQuiz(View view) {
         Intent intent = new Intent(this, QuestionActivity.class);
         startActivity(intent);
         finish();
     }
 
+    /**
+     * Create the menu with options.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+
+        // inflate the menu resource xml file
         inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Couple actions to the options in the menu.
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.logOut:
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                Intent logout = new Intent(this, LoginActivity.class);
+                startActivity(logout);
+                finish();
+                break;
+
+            case R.id.scoreboard:
+                Intent toScoreboard = new Intent(this, ScoreboardActivity.class);
+                startActivity(toScoreboard);
+                finish();
+                break;
+
+            case R.id.mainMenu:
+                Intent toMainMenu = new Intent(this, MainActivity.class);
+                startActivity(toMainMenu);
                 finish();
                 break;
         }
