@@ -44,6 +44,7 @@ public class QuestionActivity extends AppCompatActivity {
     TextView questionTextView;
     RadioButton A, B, C, D;
     String correctAnswerButton;
+    boolean answered;
 
     FirebaseUser user;
 
@@ -53,24 +54,7 @@ public class QuestionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-        FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // user is signed in
-                    Log.d(TAG, "onAuthStateChanged;signed_in" + user.getUid());
-                } else {
-                    // user is signed out
-                    Log.d(TAG, "onAuthStateChanged;signed_out");
-                }
-
-            }
-        };
-
-        mAuth.addAuthStateListener(mAuthListener);
+        listenToAuthState();
 
         // find textview and answer radiobuttons
         questionTextView = findViewById(R.id.question);
@@ -78,7 +62,6 @@ public class QuestionActivity extends AppCompatActivity {
         B = findViewById(R.id.B);
         C = findViewById(R.id.C);
         D = findViewById(R.id.D);
-
 
         // construct data source
         questionsArray = new ArrayList<>();
@@ -88,12 +71,42 @@ public class QuestionActivity extends AppCompatActivity {
         request();
     }
 
+    public void listenToAuthState() {
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        // check if user is really logged in
+        FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // user is signed in
+                    Log.d(TAG, "onAuthStateChanged;signed_in" + user.getUid());
+
+                } else {
+                    // user is signed out
+                    Log.d(TAG, "onAuthStateChanged;signed_out");
+                    Intent goToLogin = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(goToLogin);
+                    finish();
+                }
+
+            }
+        };
+
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    /**
+     * This is a request to a trivia api, that returns questions an answers as a json object.
+     */
     public void request() {
         // Instantiate the RequestQueue.
         queue = Volley.newRequestQueue(this);
 
-        // use a trivia api to get questions: it's not secure so you only need the url
-        String url = "https://opentdb.com/api.php?amount=5&category=17&difficulty=medium&type=multiple";
+        // use a trivia api to get questions: it's not secured so you only need the url
+        String url = "https://opentdb.com/api.php?amount=10&category=17&difficulty=medium&type=multiple";
 
         // Request a string response from the provided URL.
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -119,13 +132,17 @@ public class QuestionActivity extends AppCompatActivity {
                                 String incorrect2 = escape(incorrect.getString(1));
                                 String incorrect3 = escape(incorrect.getString(2));
 
+                                // make a newQuestion class
                                 Question newQuestion = new Question(question, correct_answer,
                                         incorrect1,
                                         incorrect2,
                                         incorrect3);
+
+                                // add the class instance to the datasource
                                 questionsArray.add(newQuestion);
 
-                                Log.d(TAG, "question is: " + question + " and the answer is: " + correct_answer + questionNumber + "size of array is: " + questionsArray.size());
+                                Log.d(TAG, "question is: " + question + " and the answer is: "
+                                        + correct_answer + questionNumber + "size of array is: " + questionsArray.size());
                             }
 
                             // set the first question
@@ -134,7 +151,9 @@ public class QuestionActivity extends AppCompatActivity {
                         } catch (JSONException e) {
 
                             // show error (in case of an error) jsonobject to array
-                            Toast.makeText(getApplicationContext(), "No response on request.", Toast.LENGTH_LONG).show();
+                            Log.w(TAG, "JsonObject to Json Array didn't go right.");
+                            Toast.makeText(getApplicationContext(), "No response on request.",
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -142,6 +161,9 @@ public class QuestionActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
 
                         // show error (in case of error) no response on request
+                        Toast.makeText(getApplicationContext(), "No response on request, you " +
+                                "probably don't have an internet connection right now.", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "No response on request.");
                     }
                 });
 
@@ -149,6 +171,12 @@ public class QuestionActivity extends AppCompatActivity {
         queue.add(jsObjRequest);
     }
 
+    /**
+     * Replace the escape characters from the api to the actual characters.
+     * I know this is a little ugly, but Julia told me to do it like this :-).
+     * @param toReplace
+     * @return
+     */
     public String escape(String toReplace) {
         toReplace = toReplace.replace("&quot;", "\"");
         toReplace = toReplace.replace("&apos;", "\'");
@@ -162,8 +190,12 @@ public class QuestionActivity extends AppCompatActivity {
         return toReplace;
     }
 
+    /**
+     * Set the next question.
+     */
     public void setQuestion() {
 
+        // get the question at the current position
         Question currentQuestion = questionsArray.get(questionNumber);
         questionTextView.setText(currentQuestion.question);
 
@@ -172,14 +204,17 @@ public class QuestionActivity extends AppCompatActivity {
         buttons.add(B);
         buttons.add(C);
         buttons.add(D);
+
+        // shuffle the buttons to make sure the right answers is not always the same button
         Collections.shuffle(buttons);
 
-        Log.d(TAG, "Buttons shuffled: " + buttons.get(0).getText().toString() + buttons.get(1).getText().toString() + buttons.get(2).getText().toString());
-
+        // set current question's answers text to the buttons
         buttons.get(0).setText(currentQuestion.answer1);
         buttons.get(1).setText(currentQuestion.answer2);
         buttons.get(2).setText(currentQuestion.answer3);
         buttons.get(3).setText(currentQuestion.correctAnswer);
+
+        // save correct answer button, to check if user answered correctly
         correctAnswerButton = buttons.get(3).getText().toString();
 
         Log.d(TAG, "Right answer button: " + correctAnswerButton);
@@ -187,77 +222,65 @@ public class QuestionActivity extends AppCompatActivity {
         questionNumber += 1;
     }
 
+    /**
+     * Check answer and call the set Question function to set the next Question.
+     * @param view
+     */
     public void nextQuestion(View view) {
-
+        Log.d(TAG, "Amount of right answers: " + right_answers);
         buttons.clear();
-        boolean answered = false;
+        answered = false;
 
-        if(A.isChecked()){
-            answered = true;
-
-            if (A.getText().toString() == correctAnswerButton) {
-                Toast.makeText(this, "You've answered right!", Toast.LENGTH_SHORT).show();
-                right_answers += 1;
-            } else {
-                Toast.makeText(this, "This answer was wrong...", Toast.LENGTH_SHORT).show();
-            }
-
-        } else if(B.isChecked()){
-            answered = true;
-
-            if (B.getText().toString() == correctAnswerButton) {
-                Toast.makeText(this, "You've answered right!", Toast.LENGTH_SHORT).show();
-                right_answers += 1;
-            } else {
-                Toast.makeText(this, "This answer was wrong...", Toast.LENGTH_SHORT).show();
-            }
-
-        } else if(C.isChecked()) {
-            answered = true;
-
-            if (C.getText().toString() == correctAnswerButton) {
-                Toast.makeText(this, "You've answered right!", Toast.LENGTH_SHORT).show();
-                right_answers += 1;
-            } else {
-                Toast.makeText(this, "This answer was wrong...", Toast.LENGTH_SHORT).show();
-            }
-        } else if (D.isChecked()) {
-            answered = true;
-
-            if (D.getText().toString() == correctAnswerButton) {
-                Toast.makeText(this, "You've answered right!", Toast.LENGTH_SHORT).show();
-                right_answers += 1;
-            } else {
-                Toast.makeText(this, "This answer was wrong...", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-
-        Log.d(TAG, "hoi" + answered);
+        // check buttons for right answer, and if there's answered at all
+        control(A);
+        control(B);
+        control(C);
+        control(D);
 
         if (answered == true) {
-            if (questionNumber < 5) {
+            // if not 10th question yet, set next question
+            if (questionNumber < 10) {
                 setQuestion();
             } else {
-                Toast.makeText(this, "final question", Toast.LENGTH_SHORT).show();
-
                 // update solved amount in database
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
                 Log.d(TAG, "updating solved amount to: " + right_answers);
-
                 mDatabase.child("users").child(user.getUid()).child("solved").setValue(right_answers);
 
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, ScoreboardActivity.class);
                 startActivity(intent);
                 finish();
             }
 
-        } else {
+        }
+        // if answered is still false, no radiobutton was checked
+        else {
             Toast.makeText(this, "You have to select an answer.", Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * A function to check if the radiobutton with the right answer was checked.
+     * @param button
+     */
+    public void control(RadioButton button) {
+        if (button.isChecked()){
+            answered = true;
+
+            if (button.getText().toString() == correctAnswerButton) {
+                Toast.makeText(this, "You've answered right!", Toast.LENGTH_SHORT).show();
+                right_answers += 1;
+            } else {
+                Toast.makeText(this, "This answer was wrong...", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    }
+
+    /**
+     * A question class to construct the data source for the questions.
+     */
     public class Question {
         String question;
         String correctAnswer;
