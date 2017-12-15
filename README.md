@@ -2,6 +2,7 @@
 
 Natasja Wezel, 11027649
 Created this app as final project for Native App Studio, UvA Minor Programming - 2017
+<img src='https://bettercodehub.com/edge/badge/11027649/NatasjaWezelpset6?branch=master'>
 
 ## The Trivia App
 You have to make an account to be able to use this app. If you are logged in and close the app you'll be remembered as user.
