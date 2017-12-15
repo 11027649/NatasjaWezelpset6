@@ -9,11 +9,13 @@ The results of this review are used to improve the code before the final version
 <img src="docs/reviewBritt.jpeg"/>
 
 *LoginActivity.java*
+
 signIn
 @param view description
 Log.d is for debugging only
 
 *MainActivity.java*
+
 button at main to main (same for button at scoreboard to scoreboard)
 After founding out it was a menu she found it less bad
 We talked about it and we thought this was a point to improve, but not for today anymore.
@@ -26,8 +28,9 @@ Auto generated filename = good but give the user the opportunity to choose one t
 45 login instead of logins
 
 *QuestionsActivity.java*
+
 request is really long
-(Britt says "dit is echt tyfus lang)
+
 
 Html.fromHtml instead of replace function (noted as @deprecated in Android??)
 Make a seperate class Question()
@@ -36,5 +39,6 @@ nextQuestion
 245 remove pls
 
 *ScoreboardActivity.java*
+
 scoreboard
 log.d 152
