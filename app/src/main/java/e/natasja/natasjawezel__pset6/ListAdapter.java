@@ -14,10 +14,11 @@ import java.util.ArrayList;
 
 /**
  * Created by Natasja on 11-12-2017.
+ * This is a custom List Adapter for the list in the scoreboard Activity.
  */
 
 public class ListAdapter extends ArrayAdapter {
-    public ListAdapter(Context context, ArrayList<ScoreboardActivity.UserHighscore> items) {
+    public ListAdapter(Context context, ArrayList<UserHighscore> items) {
         super(context, 0, items);
     }
 
@@ -25,7 +26,7 @@ public class ListAdapter extends ArrayAdapter {
     public View getView(int position, View view, ViewGroup parent) {
 
         // get the data item for this position
-        ScoreboardActivity.UserHighscore userHighscore = (ScoreboardActivity.UserHighscore) getItem(position);
+        UserHighscore userHighscore = (UserHighscore) getItem(position);
 
         // check if an existing view is being reused, otherwise inflate the view
         if (view == null) {

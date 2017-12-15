@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.signinButton);
         registerButton = findViewById(R.id.registerButton);
 
-        // listen for user logins, like in the explanation video
+        // listen for user login, like in the explanation video
         mAuthListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
@@ -80,7 +80,6 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Log in existing users, or create account for users that want to register.
-     * @param view
      */
     public void signIn(View view) {
         email = emailEditText.getText().toString();
@@ -88,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // the user tries to register
         if (signInButton.getText().equals("Register")) {
-            // check if password length is long enough for firebase
+            // check if password length is long enough for FireBase
             if (password.length() < 7) {
                 Toast.makeText(this, "Password must 7 characters or longer.",
                         Toast.LENGTH_SHORT).show();
@@ -107,24 +106,22 @@ public class LoginActivity extends AppCompatActivity {
         // users tries to log in
         else {
             Log.d(TAG, "Logging in: email: " + email + " and password: " + password);
-
             logIn(view);
         }
     }
 
     /**
-     * if a user is going to register, change the page layout accordingly
-     * @param view
+     * If a user is going to register, change the page layout accordingly.
      */
     public void register(View view) {
         verifyPasswordEditText.setVisibility(View.VISIBLE);
         verifyPasswordEditText.setHint("Verify password");
         registerButton.setVisibility(View.INVISIBLE);
-        signInButton.setText("Register");
+        signInButton.setText(R.string.register);
     }
 
     /**
-     * If a user registers, create the user in the database
+     * If a user registers, create the user in the database.
      */
     public void createUser() {
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -133,15 +130,15 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            // Sign in success, update UI with the signed-in user's information
+                            // sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             Toast.makeText(LoginActivity.this, "Created user: "
                                     + email, Toast.LENGTH_SHORT).show();
 
                         } else {
 
-                            // If sign in fails, display a message to the user.
-                            Log.d(TAG, "createUserWithEmail:failure");
+                            // if sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure");
                             Toast.makeText(LoginActivity.this, "You're email isn't right," +
                                     " or you've already registered", Toast.LENGTH_SHORT).show();
                             Intent goToLogin = new Intent(getApplicationContext(), LoginActivity.class);
@@ -153,29 +150,34 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Log In existing users.
-     * @param view
      */
     public void logIn(View view) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
 
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
+        if (email.equals("") || password.equals("")) {
+            Toast.makeText(this, "Please fill in your password and email adress.", Toast.LENGTH_SHORT).show();
+        } else {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithEmail:success");
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-    }
+                    });
+        }
 
+
+    }
 
 }

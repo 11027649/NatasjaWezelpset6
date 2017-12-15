@@ -56,6 +56,7 @@ public class ScoreboardActivity extends AppCompatActivity {
     /**
      * Couple actions to the menu items.
      * @param item
+     * Takes the item that is clicked as input.
      * @return true
      */
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -129,7 +130,6 @@ public class ScoreboardActivity extends AppCompatActivity {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
 
-                // clear the array
                 scoreboardArray.clear();
 
                 // iterate over the datasnapshot (which consists of 10 users)
@@ -172,21 +172,5 @@ public class ScoreboardActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Creates user highscore objects to put in the scoreboard listview.
-     */
-    public class UserHighscore {
-        // properties of the class
-        public String number;
-        public String username;
-        public String highscore;
-
-        // constructor of the class
-        public UserHighscore(String aNumber, String anUsername, String aHighscore) {
-            this.username = anUsername;
-            this.highscore = aHighscore;
-            this.number = aNumber;
-        }
-    }
 
 }

@@ -95,20 +95,17 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
                             if(snapshot.child("users").hasChild(user.getUid())) {
-                                // it's not the first time
                                 Toast.makeText(getApplicationContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
 
-                                String username = user.getEmail().split("@")[0];
-                                TextView welcome = findViewById(R.id.welcome);
-                                welcome.setText("You are logged in as: " + username);
                             } else {
+                                // if first time, add user to db
                                 addToDb();
                                 Toast.makeText(getApplicationContext(), "Welcome to this application!", Toast.LENGTH_SHORT).show();
-
-                                String username = user.getEmail().split("@")[0];
-                                TextView welcome = findViewById(R.id.welcome);
-                                welcome.setText("You are logged in as: " + username);
                             }
+
+                            String username = user.getEmail().split("@")[0];
+                            TextView welcome = findViewById(R.id.welcome);
+                            welcome.setText("You are logged in as: " + username);
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {

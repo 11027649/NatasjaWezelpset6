@@ -115,7 +115,6 @@ public class QuestionActivity extends AppCompatActivity {
 
                             // loop over JsonArray group and put the words in categoriesArray
                             for (int i = 0; i < group.length(); i++) {
-
                                 JSONObject object = group.getJSONObject(i);
 
                                 String question = object.getString("question");
@@ -130,16 +129,15 @@ public class QuestionActivity extends AppCompatActivity {
                                 String incorrect3 = escape(incorrect.getString(2));
 
                                 // make a newQuestion class
-                                Question newQuestion = new Question(question, correct_answer,
-                                        incorrect1,
-                                        incorrect2,
-                                        incorrect3);
+                                Question newQuestion = new Question(question, correct_answer, incorrect1,
+                                        incorrect2, incorrect3);
 
                                 // add the class instance to the datasource
                                 questionsArray.add(newQuestion);
 
                                 Log.d(TAG, "question is: " + question + " and the answer is: "
-                                        + correct_answer + questionNumber + "size of array is: " + questionsArray.size());
+                                        + correct_answer + questionNumber + "size of array is: "
+                                        + questionsArray.size());
                             }
 
                             // set the first question
@@ -171,8 +169,10 @@ public class QuestionActivity extends AppCompatActivity {
     /**
      * Replace the escape characters from the api to the actual characters.
      * I know this is a little ugly, but Julia told me to do it like this :-).
+     * Also I found out a bit to late about the Html.toHtml function. See REVIEW.md
      * @param toReplace
-     * @return
+     * Takes the string in which there are HTML escape characters.
+     * @return the string with these replacements.
      */
     public String escape(String toReplace) {
         toReplace = toReplace.replace("&quot;", "\"");
@@ -220,8 +220,8 @@ public class QuestionActivity extends AppCompatActivity {
     }
 
     /**
+     * This is a ClickListener for the "next question" button.
      * Check answer and call the set Question function to set the next Question.
-     * @param view
      */
     public void nextQuestion(View view) {
         Log.d(TAG, "Amount of right answers: " + right_answers);
@@ -234,7 +234,7 @@ public class QuestionActivity extends AppCompatActivity {
         control(C);
         control(D);
 
-        if (answered == true) {
+        if (answered) {
             // if not 10th question yet, set next question
             if (questionNumber < 10) {
                 setQuestion();
@@ -242,7 +242,6 @@ public class QuestionActivity extends AppCompatActivity {
                 // update solved amount in database
                 DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-                Log.d(TAG, "updating solved amount to: " + right_answers);
                 mDatabase.child("users").child(user.getUid()).child("solved").setValue(right_answers);
 
                 Intent intent = new Intent(this, ScoreboardActivity.class);
@@ -251,51 +250,28 @@ public class QuestionActivity extends AppCompatActivity {
             }
 
         }
-        // if answered is still false, no radiobutton was checked
+        // if answered is still false, no RadioButton was checked
         else {
             Toast.makeText(this, "You have to select an answer.", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
-     * A function to check if the radiobutton with the right answer was checked.
+     * A function to check if the RadioButton with the right answer was checked.
      * @param button
+     * Takes as input the button that has to be checked.
      */
     public void control(RadioButton button) {
         if (button.isChecked()){
             answered = true;
 
-            if (button.getText().toString() == correctAnswerButton) {
+            if (button.getText().toString().equals(correctAnswerButton)) {
                 Toast.makeText(this, "You've answered right!", Toast.LENGTH_SHORT).show();
                 right_answers += 1;
-            } else if (button.getText().toString() != correctAnswerButton) {
+            } else {
                 Toast.makeText(this, "This answer was wrong...", Toast.LENGTH_SHORT).show();
-
             }
         }
-    }
-
-    /**
-     * A question class to construct the data source for the questions.
-     */
-    public class Question {
-        // properties of the class
-        String question;
-        String correctAnswer;
-        String answer1;
-        String answer2;
-        String answer3;
-
-        // constructor of the class
-        public Question(String aQuestion, String aCorrectAnswer, String anAnswer1, String anAnswer2, String anAnswer3) {
-            this.question = aQuestion;
-            this.correctAnswer = aCorrectAnswer;
-            this.answer1 = anAnswer1;
-            this.answer2 = anAnswer2;
-            this.answer3 = anAnswer3;
-        }
-
-
     }
 
 }
