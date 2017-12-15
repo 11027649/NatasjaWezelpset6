@@ -6,6 +6,8 @@ The results of this review are used to improve the code before the final version
 
 ## done by Britt van Leeuwen
 
+<img src="docs/reviewBritt.jpeg"/>
+
 *LoginActivity.java*
 signIn
 @param view description
